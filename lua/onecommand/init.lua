@@ -35,6 +35,7 @@ end
 
 return M
 
+-- vim.api.nvim_set_hl(0, 'OneCommandBorder', { link = "exception" })
 -- vim.tbl_deep_extend("force", M._settings, config)
 -- :lua vim.ui.select({'a', 'b'}, {prompt= 'TEST'}, function(choice) print(choice) end)
 -- :lua vim.ui.input({prompt = 'TEST'}, function(input) print(input) end)

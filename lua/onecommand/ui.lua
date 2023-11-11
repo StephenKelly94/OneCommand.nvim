@@ -13,12 +13,13 @@ local height = math.floor(vim.o.lines * 0.8)
 
 local default_config = {
     title = "One Command",
+    titlehighlight = "OneCommandTitle",
     style = "minimal",
     relative = "editor",
     width = width,
     height = height,
     borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-    borderhighlight = "FloatTitle",
+    borderhighlight = "OneCommandBorder",
 }
 
 local set_keys = function()
