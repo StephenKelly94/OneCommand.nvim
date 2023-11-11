@@ -3,11 +3,9 @@ local ui = require("onecommand.ui")
 
 local M = {}
 
-
 M.run_command = function(input)
-    local opts = ui.create_ui_config()
     command.run_command(input, function(stdout)
-        ui.show_command_prompt(stdout, opts)
+        ui.show_command_prompt(stdout)
     end)
 end
 
@@ -30,8 +28,8 @@ M.view_history = function()
 end
 
 M.setup = function(config)
-    if not config then
-        config = {}
+    if config then
+        ui.set_config(config.ui)
     end
 end
 
