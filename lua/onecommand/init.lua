@@ -1,25 +1,28 @@
 local command = require("onecommand.command")
 local ui = require("onecommand.ui")
+
 local M = {}
 
 
 M.run_command = function(input)
     local opts = ui.create_ui_config()
-    command.run_command(input, function(_, stdout, _)
-        ui.create_output_popup(stdout, opts)
+    command.run_command(input, function(stdout)
+        ui.show_command_prompt(stdout, opts)
     end)
 end
 
 M.prompt_run_command = function()
     local user_input = command.prompt_input()
-    M.run_command(user_input)
+    if user_input ~= nil and user_input ~= "" then
+        M.run_command(user_input)
+    end
 end
 
 
 M.view_history = function()
     -- TODO history viewer
     local history = command.get_command_history()
-    ui.show_history(history, function (choice)
+    ui.show_command_history(history, function (choice)
         if choice ~= nil and choice ~= "" then
             M.run_command(choice)
         end

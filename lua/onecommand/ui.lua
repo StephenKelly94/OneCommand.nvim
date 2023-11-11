@@ -1,10 +1,55 @@
-local plenary = require("plenary")
+local popup = require("plenary.popup")
+local command = require("onecommand.command")
+local utils = require("onecommand.utils")
+local log = utils.log
 
 local M = {}
 
-local set_keys = function(buf)
+local buf_handle = nil
+local win_id = nil
+
+local set_keys = function()
 	-- Close the popup buffer and window on keypress (optional)
-	vim.api.nvim_buf_set_keymap(buf, "n", "q", string.format(":q!<CR>"), { noremap = true, silent = true })
+	vim.api.nvim_buf_set_keymap(buf_handle, "n", "q", "", {
+		callback = function()
+            M.close_command_prompt()
+        end,
+		noremap = true,
+		silent = true,
+	})
+	vim.api.nvim_buf_set_keymap(buf_handle, "n", "<ESC>", "", {
+		callback = function()
+            M.close_command_prompt()
+        end,
+		noremap = true,
+		silent = true,
+	})
+	vim.api.nvim_buf_set_keymap(buf_handle, "n", "r", "", {
+		callback = function()
+			command.run_last_command(function(stdout)
+				M.change_buffer_content(stdout)
+			end)
+		end,
+		noremap = true,
+		silent = true,
+	})
+end
+
+local create_buffer = function()
+	-- Create a new buffer for the popup
+	buf_handle = vim.api.nvim_create_buf(false, true)
+	vim.api.nvim_set_option_value("modifiable", false, { buf = buf_handle })
+	set_keys()
+	return buf_handle
+end
+
+
+M.change_buffer_content = function(content)
+    log.trace("Set content")
+    -- Toggle the buffer to modifiable then update content then toggle off
+	vim.api.nvim_set_option_value("modifiable", true, { buf = buf_handle })
+	vim.api.nvim_buf_set_lines(buf_handle, 0, #content, false, content)
+	vim.api.nvim_set_option_value("modifiable", false, { buf = buf_handle })
 end
 
 M.create_ui_config = function()
@@ -33,19 +78,29 @@ M.create_ui_config = function()
 	}
 end
 
-M.create_output_popup = function(content, opts)
-	-- Create a new buffer for the popup
-	local buf = vim.api.nvim_create_buf(false, true)
-	-- Set the content in the buffer
-	vim.api.nvim_buf_set_lines(buf, 0, -1, false, content)
-	vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+M.show_command_prompt = function(content, opts)
+	if not utils.isWindowVisible(win_id) then
+        log.trace("New popup")
+		create_buffer()
+		-- Set the content in the buffer
+		M.change_buffer_content(content)
+		local window_id, _ = popup.create(buf_handle, opts)
 
-	set_keys(buf)
-
-	local win = plenary.popup.create(buf, opts)
+		win_id = window_id
+	else
+        log.trace("Reused popup")
+		M.change_buffer_content(content)
+	end
 end
 
-M.show_history = function(history, callback)
+M.close_command_prompt = function()
+    log.trace("Closed popup")
+    vim.api.nvim_win_close(win_id, true)
+	win_id, buf_handle = nil, nil
+end
+
+M.show_command_history = function(history, callback)
+    log.trace("View history")
 	vim.ui.select(history, { prompt = "Command history" }, callback)
 end
 
