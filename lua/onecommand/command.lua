@@ -19,6 +19,10 @@ end
 M.run_command = function(command, callback)
 	local job_id = vim.fn.jobstart(command, {
 		on_stdout = function(_, stdout, _)
+            -- If there is date remove the last EOL from the output
+            if stdout ~= nil and #stdout > 0 then
+                table.remove(stdout, #stdout)
+            end
             callback(stdout)
         end,
 		stdout_buffered = true,

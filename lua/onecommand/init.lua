@@ -5,7 +5,7 @@ local M = {}
 
 M.run_command = function(input)
     command.run_command(input, function(stdout)
-        ui.show_command_prompt(stdout)
+        ui.open_output_window(stdout)
     end)
 end
 
