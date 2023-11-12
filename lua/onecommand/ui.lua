@@ -8,9 +8,9 @@ local M = {}
 local buf_handle = nil
 local win_id = nil
 
--- TODO: Test sizes
+-- TODO: Test sizes and add max height
 local width = math.floor(vim.o.columns * 0.8)
-local height = math.floor(vim.o.lines * 0.8)
+local maxheight = math.floor(vim.o.lines * 0.8)
 
 local default_config = {
     title = "One Command",
@@ -18,7 +18,7 @@ local default_config = {
     style = "minimal",
     relative = "editor",
     width = width,
-    height = height,
+    maxheight = maxheight,
     borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
     borderhighlight = "OneCommandBorder",
 }

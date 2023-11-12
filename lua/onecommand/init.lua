@@ -16,6 +16,9 @@ M.prompt_run_command = function()
     end
 end
 
+M.show_last_command_output = function ()
+    ui.open_output_window(command.get_last_command_output())
+end
 
 M.view_history = function()
     -- TODO history viewer

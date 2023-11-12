@@ -1,10 +1,25 @@
 local M = {}
+-- TODO: Consider using some file to 'remember'
 local commands = {}
+local last_command_output = {}
+local COMMAND_LIMIT = 2
+
+local add_command_to_history = function(command)
+    print("HIST: " .. command)
+    if command ~= nil and command:gsub("%s+", "") ~= "" then
+        -- TODO: Should probably also limit the amount of commands
+        table.insert(commands, 1, command)
+        if #commands > COMMAND_LIMIT then
+            commands =  {unpack(commands, 1, COMMAND_LIMIT)}
+        end
+    end
+end
 
 M.prompt_input = function()
 	-- Prompt for user input
 	local command = vim.fn.input("Run Command: ")
-    table.insert(commands, command)
+    print("INPUT: " .. command)
+    add_command_to_history(command)
     return command
 end
 
@@ -23,6 +38,7 @@ M.run_command = function(command, callback)
             if stdout ~= nil and #stdout > 0 then
                 table.remove(stdout, #stdout)
             end
+            last_command_output = stdout
             callback(stdout)
         end,
 		stdout_buffered = true,
@@ -33,6 +49,10 @@ end
 
 M.run_last_command = function(callback)
     M.run_command(M.get_last_command(), callback)
+end
+
+M.get_last_command_output = function()
+    return last_command_output
 end
 
 return M
