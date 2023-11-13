@@ -21,7 +21,6 @@ M.show_last_command_output = function ()
 end
 
 M.view_history = function()
-    -- TODO history viewer
     local history = command.get_command_history()
     ui.show_command_history(history, function (choice)
         if choice ~= nil and choice ~= "" then
