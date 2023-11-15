@@ -6,6 +6,7 @@ local COMMAND_LIMIT = 100
 
 local add_command_to_history = function(command)
     if command ~= nil and command:gsub('%s+', '') ~= '' then
+        -- Prepend to list so newest command is at the front
         table.insert(commands, 1, command)
         if #commands > COMMAND_LIMIT then
             commands =  {unpack(commands, 1, COMMAND_LIMIT)}
@@ -14,21 +15,24 @@ local add_command_to_history = function(command)
 end
 
 M.prompt_input = function()
-	-- Prompt for user input
 	local command = vim.fn.input('Run Command: ')
-    add_command_to_history(command)
     return command
 end
 
 M.get_last_command = function()
-    return commands[#commands]
+    -- Return first element because it is the last command
+    return commands[1]
 end
 
 M.get_command_history = function()
     return commands
 end
 
-M.run_command = function(command, callback)
+M.run_command = function(command, addToHistory, callback)
+    if addToHistory then
+        add_command_to_history(command)
+    end
+
 	local job_id = vim.fn.jobstart(command, {
 		on_stdout = function(_, stdout, _)
             -- If there is date remove the last EOL from the output
@@ -45,7 +49,7 @@ M.run_command = function(command, callback)
 end
 
 M.run_last_command = function(callback)
-    M.run_command(M.get_last_command(), callback)
+    M.run_command(M.get_last_command(), false, callback)
 end
 
 M.get_last_command_output = function()

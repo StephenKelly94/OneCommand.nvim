@@ -4,7 +4,7 @@ local ui = require('onecommand.ui')
 local M = {}
 
 M.run_command = function(input)
-    command.run_command(input, function(stdout)
+    command.run_command(input, true, function(stdout)
         ui.open_output_window(stdout)
     end)
 end
