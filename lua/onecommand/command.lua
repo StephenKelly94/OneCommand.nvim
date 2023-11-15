@@ -21,15 +21,6 @@ M.prompt_input = function()
     return command
 end
 
-M.get_last_command = function()
-    -- Return first element because it is the last command
-    return commands[1]
-end
-
-M.get_command_history = function()
-    return commands
-end
-
 M.run_command = function(command, addToHistory, callback)
     if addToHistory then
         add_command_to_history(command)
@@ -46,12 +37,21 @@ M.run_command = function(command, addToHistory, callback)
     vim.system(parsed_command, nil, result_function)
 end
 
-M.run_last_command = function(callback)
-    M.run_command(M.get_last_command(), false, callback)
+M.get_command_history = function()
+    return commands
+end
+
+M.get_last_command = function()
+    -- Return first element because it is the last command
+    return commands[1]
 end
 
 M.get_last_command_output = function()
     return last_command_output
+end
+
+M.run_last_command = function(callback)
+    M.run_command(M.get_last_command(), false, callback)
 end
 
 return M
