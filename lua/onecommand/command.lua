@@ -5,7 +5,7 @@ local last_command_output = {}
 local COMMAND_LIMIT = 100
 
 local add_command_to_history = function(command)
-    if command ~= nil and command:gsub("%s+", "") ~= "" then
+    if command ~= nil and command:gsub('%s+', '') ~= '' then
         table.insert(commands, 1, command)
         if #commands > COMMAND_LIMIT then
             commands =  {unpack(commands, 1, COMMAND_LIMIT)}
@@ -15,7 +15,7 @@ end
 
 M.prompt_input = function()
 	-- Prompt for user input
-	local command = vim.fn.input("Run Command: ")
+	local command = vim.fn.input('Run Command: ')
     add_command_to_history(command)
     return command
 end
