@@ -1,3 +1,5 @@
+local utils = require('onecommand.utils')
+
 local M = {}
 -- TODO: Consider using some file to 'remember'
 local commands = {}
@@ -33,19 +35,15 @@ M.run_command = function(command, addToHistory, callback)
         add_command_to_history(command)
     end
 
-	local job_id = vim.fn.jobstart(command, {
-		on_stdout = function(_, stdout, _)
-            -- If there is date remove the last EOL from the output
-            if stdout ~= nil and #stdout > 0 then
-                table.remove(stdout, #stdout)
-            end
+    local parsed_command = utils.splitStringBySpace(command)
+
+    local result_function = vim.schedule_wrap(function (result)
+            local stdout = utils.splitStringByNewline(result.stdout)
             last_command_output = stdout
             callback(stdout)
-        end,
-		stdout_buffered = true,
-		stderr_buffered = true,
-	})
-	return job_id
+    end)
+
+    vim.system(parsed_command, nil, result_function)
 end
 
 M.run_last_command = function(callback)
