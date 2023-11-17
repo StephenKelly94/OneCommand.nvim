@@ -30,7 +30,8 @@ M.view_history = function()
 end
 
 M.setup = function(config)
-    if config then
+    -- print("config passed: " .. vim.inspect(config))
+    if config ~= nil then
         ui.set_config(config.ui)
     end
 end
