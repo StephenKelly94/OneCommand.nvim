@@ -43,7 +43,7 @@ local set_keys = function()
     vim.api.nvim_buf_set_keymap(buf_handle, "n", "r", "", {
         callback = function()
             command.run_last_command(function(stdout)
-                M.change_buffer_content(stdout)
+                M.set_buffer_content(stdout)
             end)
         end,
         noremap = true,
@@ -54,15 +54,12 @@ end
 local create_buffer = function(content)
     -- Create a new buffer for the popup
     buf_handle = vim.api.nvim_create_buf(false, true)
-
-
-    vim.api.nvim_set_option_value("modifiable", default_config.modifiable, { buf = buf_handle })
-    M.change_buffer_content(content)
+    M.set_buffer_content(content)
     set_keys()
     return buf_handle
 end
 
-local create_popup = function()
+local get_popup_config = function()
     -- Use the length of the output or 80%, whichever is smaller
     local calculated_height = math.min(
         vim.api.nvim_buf_line_count(buf_handle),
@@ -75,40 +72,41 @@ local create_popup = function()
     local row = math.floor((vim.o.lines - height) / 2)
     local col = math.floor((vim.o.columns - width) / 2)
 
-    local adjusted_config = {
+    local adjusted_size =  {
         height = height,
         width = width,
         row = row,
         col = col,
     }
-
-    adjusted_config =
-        vim.tbl_deep_extend("force", default_config.popup, adjusted_config)
-
-    local window_id = vim.api.nvim_open_win(buf_handle, true, adjusted_config)
-    win_id = window_id
-
-    vim.api.nvim_set_option_value("number", default_config.line_numbers, { win = window_id })
-    vim.api.nvim_set_option_value("relativenumber", default_config.relative_numbers, { win = window_id })
+    return vim.tbl_deep_extend("force", default_config.popup, adjusted_size)
 end
 
+local create_popup = function()
+    local window_id = vim.api.nvim_open_win(buf_handle, true, get_popup_config())
+    win_id = window_id
+
+    vim.api.nvim_set_option_value("number", default_config.line_numbers, { win = win_id })
+    vim.api.nvim_set_option_value("relativenumber", default_config.relative_numbers, { win = win_id })
+end
+
+
 M.set_config = function(config)
-    -- TODO: Add config parameters here
-    -- Put popup config in popup section
-    -- Set line numbers
-    -- modifiable
-    -- Instant popup? so it for jobs that take time, bring popup to say loading
     default_config = vim.tbl_deep_extend("force", default_config, config)
 end
 
-M.change_buffer_content = function(content)
+M.set_buffer_content = function(content)
     -- If it's not modifiable we need to make it modifiable then update it
     if not default_config.modifiable then
         vim.api.nvim_set_option_value("modifiable", true, { buf = buf_handle })
-        vim.api.nvim_buf_set_lines(buf_handle, 0, #content, false, content)
-        vim.api.nvim_set_option_value("modifiable", false, { buf = buf_handle })
+        vim.api.nvim_buf_set_lines(buf_handle, 0, -1, false, content)
     else
-        vim.api.nvim_buf_set_lines(buf_handle, 0, #content, false, content)
+        vim.api.nvim_buf_set_lines(buf_handle, 0, -1, false, content)
+    end
+    vim.api.nvim_set_option_value("modifiable", default_config.modifiable, { buf = buf_handle })
+
+    if utils.isWindowVisible(win_id) then
+        -- Recalculate the sizes after updating content
+        vim.api.nvim_win_set_config(win_id, get_popup_config())
     end
 end
 
@@ -118,7 +116,7 @@ M.open_output_window = function(content)
             create_buffer(content)
             create_popup()
         else
-            M.change_buffer_content(content)
+            M.set_buffer_content(content)
         end
     end
 end

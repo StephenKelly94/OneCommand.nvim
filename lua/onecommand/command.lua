@@ -2,25 +2,25 @@ local utils = require("onecommand.utils")
 
 local M = {}
 
-local default_config = { }
+local default_config = {
+    command_limit = 100
+}
 
 -- TODO: Consider using some file to 'remember'
 local commands = {}
 local last_command_output = {}
-local COMMAND_LIMIT = 100
 
 local add_command_to_history = function(command)
     if command ~= nil and command:gsub("%s+", "") ~= "" then
         -- Prepend to list so newest command is at the front
         table.insert(commands, 1, command)
-        if #commands > COMMAND_LIMIT then
-            commands = { unpack(commands, 1, COMMAND_LIMIT) }
+        if #commands > default_config.command_limit then
+            commands = { unpack(commands, 1, default_config.command_limit) }
         end
     end
 end
 
 M.set_config = function(config)
-    -- TODO: Add config parameters here
     default_config = vim.tbl_deep_extend("force", default_config, config)
 end
 

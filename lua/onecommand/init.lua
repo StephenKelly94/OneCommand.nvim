@@ -30,26 +30,10 @@ M.view_history = function()
 end
 
 M.setup = function(config)
-    -- print("config passed: " .. vim.inspect(config))
     if config ~= nil then
         ui.set_config(config.ui)
+        command.set_config(config.command)
     end
 end
 
 return M
-
--- vim.api.nvim_set_hl(0, 'OneCommandBorder', { link = 'exception' })
--- vim.tbl_deep_extend('force', M._settings, config)
--- :lua vim.ui.select({'a', 'b'}, {prompt= 'TEST'}, function(choice) print(choice) end)
--- :lua vim.ui.input({prompt = 'TEST'}, function(input) print(input) end)
--- :lua vim.system({'ls -lah'}, {text = true}, function(obj) print(obj.stdout) end)
--- :lua package.loaded['onecommand'] = nil
--- :lua require('onecommand').test()
---
--- vim.schedule(function()
---     vim.system(words, { text = true }, function(obj)
---         local opts = create_popup_opts()
---         create_popup(obj.stdout, opts)
---         print(vim.inspect(obj.stdout))
---     end)
--- end)
