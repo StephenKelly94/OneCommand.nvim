@@ -18,6 +18,7 @@ command history.
 **Note:** On the date command in the video I am manually pressing the refresh button.
 
 ### Default style
+[default_style.webm](https://github.com/StephenKelly94/OneCommand.nvim/assets/6800258/6681310c-fad5-48f4-a01d-3ee12954ba8a)
 
 ### [noice.nvim](https://github.com/folke/noice.nvim)
 
