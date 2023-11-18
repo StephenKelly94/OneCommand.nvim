@@ -15,8 +15,6 @@ local default_config = {
     popup = {
         title = "One Command",
         title_pos = "center",
-        footer = ' Quit = "q"/<esc> ------- Run last command = "r" ',
-        footer_pos = "center",
         style = "minimal",
         relative = "editor",
         zindex = 50,
