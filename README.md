@@ -14,7 +14,13 @@ command history.
 * Saves previous commands to history so they can be searched and run again
 * Saves the output of last command so it can be brought back up for reference
 
-<!-- TODO: Add some gif/video of use -->
+## Demo
+**Note:** On the date command in the video I am manually pressing the refresh button.
+
+### Default style
+
+### [noice.nvim](https://github.com/folke/noice.nvim)
+
 
 ## Installation
 
@@ -27,18 +33,43 @@ Add x and y to lazy vim and packer etc.
             -- your configuration comes here
             -- or leave it empty to use the default settings
             -- refer to the configuration section below
-        }
+        },
+        keys = {
+            -- Set keybindings here
+        },
     }
 ```
 
 ## Configuration
 Here are the configuration parameters you can set, should be set through setup
 function
+```lua
+{
+
+}
+```
 
 ## Usage
 Here are the things you can do and which key binds you can use
+```lua
+vim.api.nvim_set_keymap(
+    "n",
+    "<Leader>xc",
+    ':lua require("onecommand").prompt_run_command()<CR>',
+    { noremap = true }
+)
 
-## TODO
-I am not sure if these are even possible
-- Figure out how to use aliases (don't seem to work)
-- Perhaps get terminal colors
+vim.api.nvim_set_keymap(
+    "n",
+    "<Leader>xh",
+    ':lua require("onecommand").view_history()<CR>',
+    { noremap = true }
+)
+
+vim.api.nvim_set_keymap(
+    "n",
+    "<Leader>xl",
+    ':lua require("onecommand").show_last_command_output()<CR>',
+    { noremap = true }
+)
+```
