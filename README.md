@@ -30,7 +30,7 @@ command history.
     {
         "StephenKelly94/OneCommand.nvim",
         opts = {
-            -- your configuration comes here
+            -- configuration here
             -- or leave it empty to use the default settings
             -- refer to the configuration section below
         },
@@ -46,8 +46,15 @@ command history.
 ```
 
 ## Configuration
-Here are the configuration parameters you can set, should be set through setup
-function
+When configuring `onecommand` you need to use the setup function
+```lua
+require("onecommand").setup({
+    -- configuration here
+})
+```
+
+### Options
+Here is a list of the options that are configurable with their default settings
 ```lua
 {
 
